@@ -1,0 +1,12 @@
+echo "# hpt08" >> README.md
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/davidaulab/hpt08.git
+git push -u origin main
+
+
+git add .
+git commit -m "Clase 2: condicionales y bucles"
+git push -u origin main
