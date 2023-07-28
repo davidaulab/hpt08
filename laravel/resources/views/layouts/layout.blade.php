@@ -39,7 +39,7 @@
 
     </main>
 
-<footer class="blockquote-footer fixed-bottom">&copy; {{ env('APP_COPY')}}</footer>
+<x-footer />
 
 </body>
 

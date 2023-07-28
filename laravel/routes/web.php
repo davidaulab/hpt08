@@ -16,6 +16,7 @@ use App\Http\Controllers\BarController;
 */
 
 Route::get('/', function () {
+    return view ('home');
     return redirect()->route ('inicio', ['numero' => 9, 'name' => 'Otro nombre']);
 });
 /*

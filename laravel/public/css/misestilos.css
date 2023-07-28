@@ -1,3 +1,7 @@
+:root {
+    --footerheight: 60px;
+}
+
 body {
     color: #782017;
     background-color: #fcf7b8;
@@ -9,3 +13,5 @@ body {
 .logo {
     height: 1.5em;
 }
+footer {height: var(--footerheight)}
+main {margin-bottom: var(--footerheight)}
