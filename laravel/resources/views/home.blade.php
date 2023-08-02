@@ -26,5 +26,11 @@
 
     @endfor
 
+    <div id="popcorn" aria-describedby="tooltip"></div>
+    <div id="tooltip" role="tooltip">
+      My tooltip
+      <div id="arrow" data-popper-arrow></div>
+    </div>
+
     @yield ('footer')
 @endsection

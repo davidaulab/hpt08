@@ -12,8 +12,8 @@
           <div class="card" >
             <img src="..." class="card-img-top" alt="...">
             <div class="card-body">
-              <h5 class="card-title">{{ $bar[1] }}</h5>
-              <p class="card-text">{{ $bar[2] }}</p>
+              <h5 class="card-title">{{ $bar->name }}</h5>
+              <p class="card-text">{{ $bar->description }}</p>
             </div>
           </div>
         </div>

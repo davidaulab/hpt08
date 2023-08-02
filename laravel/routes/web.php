@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\BarController;
+use App\Http\Controllers\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +18,8 @@ use App\Http\Controllers\BarController;
 
 Route::get('/', function () {
     return view ('home');
-    return redirect()->route ('inicio', ['numero' => 9, 'name' => 'Otro nombre']);
-});
+
+})->name('home');
 /*
 Route::get('/estoesuncambiodeultimahora', function () {
     return view ('prueba');
@@ -32,7 +33,12 @@ Route::get('/fadfadfasdfasfdsad/{numero}/{name}', function ($name = 'David', $nu
 
 Route::get ('/bar/listado', [ BarController::class, 'index' ])->name('bars.index');
 
+Route::get('/bar/create', [BarController::class, 'create'])->name('bars.create');
+Route::post('/bar/store', [BarController::class, 'store'])->name('bars.store');
+
 Route::get ('/bar/{id}', [BarController::class, 'show'])->name('bars.show');
 
 
+Route::get ('/contacto', [ContactController::class, 'create'])->name('contact');
+Route::post ('/contacto', [ContactController::class, 'store']);
 
