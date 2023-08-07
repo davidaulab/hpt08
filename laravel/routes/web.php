@@ -36,12 +36,12 @@ Route::get ('/bar/listado', [ BarController::class, 'index' ])->name('bars.index
 Route::get('/bar/create', [BarController::class, 'create'])->name('bars.create');
 Route::post('/bar/store', [BarController::class, 'store'])->name('bars.store');
 
-Route::get('/bar/edit/{id}', [BarController::class, 'edit'])->name('bars.edit');
-Route::post('/bar/update/{id}', [BarController::class, 'update'])->name('bars.update');
+Route::get('/bar/edit/{bar}', [BarController::class, 'edit'])->name('bars.edit');
+Route::post('/bar/update/{bar}', [BarController::class, 'update'])->name('bars.update');
 
-Route::post('/bar/delete/{id}', [BarController::class, 'delete'])->name('bars.delete');
+Route::post('/bar/delete/{bar}', [BarController::class, 'delete'])->name('bars.delete');
 
-Route::get ('/bar/{id}', [BarController::class, 'show'])->name('bars.show');
+Route::get ('/bar/{bar}', [BarController::class, 'show'])->name('bars.show');
 
 
 Route::get ('/contacto', [ContactController::class, 'create'])->name('contact');

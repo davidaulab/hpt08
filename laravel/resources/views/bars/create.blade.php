@@ -13,7 +13,7 @@
 
         <x-flash-message code="{{ Session::get ('code') }}" message="{{ Session::get ('message') }}"/>
 
-        <form method="POST" action="{{ route('bars.store')}}">
+        <form method="POST" action="{{ route('bars.store')}}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
               <label for="name" class="form-label">Nombre del bar</label>
@@ -25,7 +25,10 @@
                 <label for="description" class="form-label">Descripción</label>
                 <textarea name="description" id="description" class="form-control" >{{ old ('description')}}</textarea>
               </div>
-
+              <div class="mb-3">
+                <label for="image" class="form-label">Foto</label>
+                <input class="form-control" type="file" id="image" name="image">
+              </div>
 
             <button type="submit" class="btn btn-primary">Enviar</button>
           </form>
