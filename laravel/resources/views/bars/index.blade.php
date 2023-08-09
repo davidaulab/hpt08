@@ -41,7 +41,13 @@
 
         <div class="d-flex justify-content-center p-4">
 
+        @auth
         <a href="{{ route ('bars.create')}}" class="btn btn-primary">Nuevo bar</a>
+        @else
+            <p>Solamente los usuarios registrados pueden crear nuevos bares<br>
+            <a href="{{ route('register') }}">Date de alta ahora</a>
+            </p>
+        @endauth
         </div>
 
 @endsection

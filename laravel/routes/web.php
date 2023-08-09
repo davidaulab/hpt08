@@ -33,13 +33,16 @@ Route::get('/fadfadfasdfasfdsad/{numero}/{name}', function ($name = 'David', $nu
 
 Route::get ('/bar/listado', [ BarController::class, 'index' ])->name('bars.index');
 
-Route::get('/bar/create', [BarController::class, 'create'])->name('bars.create');
-Route::post('/bar/store', [BarController::class, 'store'])->name('bars.store');
+Route::group(['middleware' => 'auth'], function () {
+        Route::get('/bar/create', [BarController::class, 'create'])->name('bars.create');
+        Route::post('/bar/store', [BarController::class, 'store'])->name('bars.store');
 
-Route::get('/bar/edit/{bar}', [BarController::class, 'edit'])->name('bars.edit');
-Route::post('/bar/update/{bar}', [BarController::class, 'update'])->name('bars.update');
+        Route::get('/bar/edit/{bar}', [BarController::class, 'edit'])->name('bars.edit');
+        Route::post('/bar/update/{bar}', [BarController::class, 'update'])->name('bars.update');
 
-Route::post('/bar/delete/{bar}', [BarController::class, 'delete'])->name('bars.delete');
+        Route::post('/bar/delete/{bar}', [BarController::class, 'delete'])->name('bars.delete');
+    });
+
 
 Route::get ('/bar/{bar}', [BarController::class, 'show'])->name('bars.show');
 
@@ -47,3 +50,7 @@ Route::get ('/bar/{bar}', [BarController::class, 'show'])->name('bars.show');
 Route::get ('/contacto', [ContactController::class, 'create'])->name('contact');
 Route::post ('/contacto', [ContactController::class, 'store']);
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

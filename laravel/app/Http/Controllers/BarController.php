@@ -10,6 +10,7 @@ use App\Http\Requests\BarRequest;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Bar;
+use Illuminate\Support\Facades\Auth;
 use RuntimeException;
 
 class BarController extends Controller
@@ -18,13 +19,22 @@ class BarController extends Controller
 
     // LISTADO
     public function index () {
-        $bares = Bar::orderBy('name')->get();
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $bares = Bar::orderBy('name')->get();
+
+        }
+        else {
+            $bares = Bar::orderByDesc('id')->limit(6)->get();
+        }
+
         foreach($bares as $bar) {
             if (!isset($bar->image) || ($bar->image == '')) {
                 $bar->image = asset ('img/logo.png');
             }
         }
         return view ('bars.index', compact('bares'));
+
     }
     public function indexQB (Request $request) {
 

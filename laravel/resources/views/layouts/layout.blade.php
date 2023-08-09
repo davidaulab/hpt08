@@ -28,7 +28,37 @@
               </li>
             </ul>
             <span class="navbar-text text-white">
-              Navbar text with an inline element
+              <!-- Right Side Of Navbar -->
+              <ul class="navbar-nav ms-auto">
+                <!-- Authentication Links -->
+
+
+                @guest
+                    @if (Route::has('login'))
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        </li>
+                    @endif
+
+                    @if (Route::has('register'))
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('register') }}">{{ __('Register') }}</a>
+                        </li>
+                    @endif
+                @else
+
+                <form action="{{ route('logout') }}" method="POST" >
+                    @csrf
+                    <li class="nav-item">
+                        <button type="submit" class="nav-link text-white" >¿No soy {{ Auth::user()->name }}?</button>
+                    </li>
+                </form>
+
+
+
+
+                @endguest
+            </ul>
             </span>
           </div>
         </div>
