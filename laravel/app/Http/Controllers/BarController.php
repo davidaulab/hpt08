@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\Bar;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\Paginator;
+
 use RuntimeException;
 
 class BarController extends Controller
@@ -19,9 +21,11 @@ class BarController extends Controller
 
     // LISTADO
     public function index () {
+        
+        Paginator::useBootstrapFive();
         $user = Auth::user();
         if (!is_null($user)) {
-            $bares = Bar::orderBy('name')->get();
+            $bares = Bar::orderBy('name')->paginate(env('APP_PAGE', 12));
 
         }
         else {
@@ -33,6 +37,7 @@ class BarController extends Controller
                 $bar->image = asset ('img/logo.png');
             }
         }
+        //dd ($bares);
         return view ('bars.index', compact('bares'));
 
     }

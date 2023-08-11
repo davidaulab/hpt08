@@ -11,26 +11,10 @@
 
         <x-flash-message code="{{ Session::get ('code') }}" message="{{ Session::get ('message') }}"/>
 
-        <div  class="row">
+        <div id="divScroll" class="row ">
         @foreach ($wines as $key => $wine)
-        <div class="col-4 py-2 d-flex align-items-stretch" >
-          <div class="card w-100" >
-            @if (isset($wine->image) && ($wine->image != ''))
-            <img src="{{ $wine->image}}" class="card-img-top" alt="{{ $wine->name }}">
-            @else
-            <img src="{{ asset('img/logo.png')}}" class="card-img-top" alt="{{ $wine->name }}">
-            @endif
-
-            <div class="card-body">
-
-              <h5 class="card-title">{{ $wine->name }}</h5>
-              <p class="card-text">{{ $wine->description}}
-
-            </p>
-              <a href="{{ route ('wine.show', $wine->id ) }}" class="btn btn-primary">Ver</a>
-            </div>
-          </div>
-        </div>
+        
+        <x-wine :wine="$wine" />
 
         @if (($key % 3) == 2)
     </div>
@@ -50,4 +34,50 @@
         @endauth
         </div>
 
+<a href="javascript:window.moreData()">Siguiente pagina</a>
+
+<script>
+window.page = 1;
+window.finScroll = false;
+window.ajaxPdte = false;
+window.moreData = ( () => {
+      if ((window.finScroll == false) && (window.ajaxPdte == false)){
+          window.ajaxPdte = true;
+          window.page++;
+          urlScroll = '{{ route('wine.index')}}?page=' + window.page;
+
+          $.ajax (
+            {
+              url: urlScroll,
+              type: 'get'
+            }
+          ).done (function (data) {
+
+                if (data.scrollHTML == '') {
+                  window.finScroll = true;
+                }
+                else {
+                    $('#divScroll').append (data.scrollHTML);
+                }
+              
+                window.ajaxPdte = false;
+          })
+          .fail (function (jqXHR, ajaxOption, thrownError) {
+              $('#divScroll').append ('<p class="text-danger">Ha ocurrido un error al cargar más vinos</p>');
+              window.ajaxPdte = false;
+          });
+      }
+      
+});
+
+window.addEventListener ('scroll', function () {
+    console.log ('pasa por listener');
+    if ( ($(window).scrollTop + $(window).height ) >= 
+          ($('#divScroll').scrollTop +  $('#divScroll').height))  {
+            console.log ('dentro del if');
+            window.moreData()
+    }
+    console.log ('' + $(window).scrollTop + '-' + $(window).height + '-' + $('#divScroll').scrollTop + '-' + $('#divScroll').height)
+});
+</script>
 @endsection

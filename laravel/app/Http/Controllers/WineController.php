@@ -11,10 +11,22 @@ class WineController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $wines = Wine::orderBy('name')->get();
+
+        $wines = Wine::orderBy('name')->paginate(3);
+        if ($request->ajax()) {
+            $ret = '';
+
+            foreach ($wines as $wine) {
+                $atts = [
+                    'wine' => $wine
+                ];
+                $ret .= view ('components.wine', $atts)->render();
+            }
+            return response()->json (['scrollHTML' => $ret]);
+        }
 
         return view ('wines.index', compact('wines'));
     }
