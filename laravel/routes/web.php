@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\BarController;
 use App\Http\Controllers\ContactController;
-
+use App\Http\Controllers\WineController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,7 +19,13 @@ use App\Http\Controllers\ContactController;
 Route::get('/', function () {
     return view ('home');
 
-})->name('home');
+})->name('index');
+
+// la ruta Home la crea Fortify y aplica el middleware de Auth
+Route::get('/home', function () {
+    return redirect()->route('index');
+}
+)->name('home');
 /*
 Route::get('/estoesuncambiodeultimahora', function () {
     return view ('prueba');
@@ -46,6 +52,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::get ('/bar/{bar}', [BarController::class, 'show'])->name('bars.show');
 
+Route::resource('/wine', WineController::class)->parameters(['wines']);
+
 
 Route::get ('/contacto', [ContactController::class, 'create'])->name('contact');
 Route::post ('/contacto', [ContactController::class, 'store']);
@@ -53,4 +61,4 @@ Route::post ('/contacto', [ContactController::class, 'store']);
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

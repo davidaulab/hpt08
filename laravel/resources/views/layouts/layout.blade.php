@@ -24,6 +24,9 @@
                 <a class="nav-link text-white" href="{{ route ('bars.index') }}">Mejores bares</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link text-white" href="{{ route ('wine.index') }}">Nuestra bodega</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link text-white" href="{{ route ('contact') }}">Contacto</a>
               </li>
             </ul>
