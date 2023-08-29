@@ -3,11 +3,15 @@
 @section ('title', 'Listado de bares')
 
 @section('content')
-        <h1>Listado de bares</h1>
 
-
-
-
+        @if (isset ($user) && (Auth::user() !== null) && ($user->id == Auth::user()->id))
+        <h1>Mis propuestas</h1>
+        @else
+          <h1>Listado de bares</h1>
+          @isset($user)
+            <h2>Visualizando las propuestas de: {{ $user->name}}</h2>
+          @endisset
+        @endif
 
 
         <x-flash-message code="{{ Session::get ('code') }}" message="{{ Session::get ('message') }}"/>
@@ -25,6 +29,10 @@
             <div class="card-body">
 
               <h5 class="card-title">{{ $bar->name }}</h5>
+              @isset($bar->user)
+              <h6 class="card-text" style="font-size: 0.7em">Propuesta de: 
+              <a href="{{ route('bars.proposals', $bar->user) }}">{{ $bar->user->name}}</a></h6>
+              @endisset
               <p class="card-text">{{ $bar->description}}
 
             </p>
@@ -54,10 +62,12 @@
         @endauth
         </div>
 
+ 
+@if (method_exists ($bares, 'getPageName'))
 <div class="d-flex justify-content-center">
    <ul class="pagination">
       <li class="page-item">
-          <a class="page-link" href="{{route('bars.index') . '?' . $bares->getPageName () . '=1' }}" rel="prev" aria-label="« Inicio">‹</a>
+          <a class="page-link" href="{{ '?' . $bares->getPageName () . '=1' }}" rel="prev" aria-label="« Inicio">‹</a>
       </li>  
 
 
@@ -68,13 +78,14 @@
     </li>
    @else 
    <li class="page-item">
-          <a class="page-link" href="{{ route('bars.index') . '?' . $bares->getPageName () . '=' . $i}}">{{ $i }}</a> 
+          <a class="page-link" href="{{  '?' . $bares->getPageName () . '=' . $i}}">{{ $i }}</a> 
    </li> 
    @endif
 @endfor
 <li class="page-item">
-<a class="page-link" href="{{route('bars.index') . '?' . $bares->getPageName () . '=' . $bares->lastPage () }}"rel="next" aria-label="Ultimo">›</a>
+<a class="page-link" href="{{ '?' . $bares->getPageName () . '=' . $bares->lastPage () }}"rel="next" aria-label="Ultimo">›</a>
 </li>
 </ul>
 </div>
+@endif
 @endsection

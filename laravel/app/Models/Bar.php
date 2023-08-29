@@ -11,4 +11,7 @@ class Bar extends Model
 
     protected $fillable = ['name', 'description', 'image'];
     //protected $guard = ['id']
+    public function user () {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -49,7 +49,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/bar/delete/{bar}', [BarController::class, 'delete'])->name('bars.delete');
     });
 
-
+Route::get ('/bar/proposals/{user}', [BarController::class, 'proposals'])->name ('bars.proposals');
+    
 Route::get ('/bar/{bar}', [BarController::class, 'show'])->name('bars.show');
 
 Route::resource('/wine', WineController::class)->parameters(['wines']);

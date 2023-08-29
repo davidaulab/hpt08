@@ -10,6 +10,7 @@ use App\Http\Requests\BarRequest;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Bar;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 
@@ -39,6 +40,18 @@ class BarController extends Controller
         }
         //dd ($bares);
         return view ('bars.index', compact('bares'));
+
+    }
+    public function proposals (User $user) {
+       
+        $bares = Bar::whereBelongsTo ($user)->paginate(env('APP_PAGE', 12));
+        foreach($bares as $bar) {
+            if (!isset($bar->image) || ($bar->image == '')) {
+                $bar->image = asset ('img/logo.png');
+            }
+        }
+        //dd ($bares);
+        return view ('bars.index', compact('bares', 'user'));
 
     }
     public function indexQB (Request $request) {
@@ -83,7 +96,8 @@ class BarController extends Controller
             'description'   => $request->description,
             'image'         => $image
         ]);
-
+        // Auth::user();
+        $bar->user_id = Auth::user()->id; 
         //dd ($bar);
         $bar->saveOrFail ();
         //dd ($request);
@@ -106,7 +120,14 @@ class BarController extends Controller
     }
     // MODIFICAR
     public function edit (Bar $bar) {
-        return view ('bars.edit', compact('bar'));
+        if (isset($bar->user) && ($bar->user->id == Auth::user()->id)) {
+            return view ('bars.edit', compact('bar'));
+        }
+        else {
+            return redirect ()->route ('bars.index')->with ('code', '200')->with('message', 'No tienes permisos para modificar ese bar');
+    
+        }
+        
     }
     public function update (BarRequest $request, Bar $bar) {
         $image = '';
@@ -145,8 +166,9 @@ class BarController extends Controller
     // BORRAR
     public function delete (Bar $bar) {
         try {
-            $bar->deleteOrFail();
-
+            if (isset($bar->user) && ($bar->user->id == Auth::user()->id)) {
+                $bar->deleteOrFail();
+            }
         } catch (RuntimeException $e) {
             return redirect ()->route ('bars.index')->with ('code', '400')->with('message', 'No se ha podido eliminar el bar');
 
