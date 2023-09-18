@@ -1,8 +1,14 @@
-@extends ('home')
+@extends ('layouts.layout')
 
-@section ('footer')
+@section ('content')
  <h1>Hello, world!</h1>
+<input type="text" name="x" value="Inicial">
+<form method="post">
 
-
-        <a href="{{ route('inicio', ['name' => 'Alejandra y Verónica', 'numero' => 4])}}">Vuelvo a home</a>
+    @csrf
+    <h2>Van {{ $count }} envíos</h2>
+    <button type="submit">Enviar</button>
+</form>
+  <hr>
+  <livewire:counter />     
  @endsection

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bar;
 use App\Models\Wine;
+
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class WineController extends Controller
 {
@@ -37,7 +40,8 @@ class WineController extends Controller
     public function create()
     {
         //
-        return view ('wines.create');
+        $bars = Bar::orderBy ('name')->get();
+        return view ('wines.create', compact('bars'));
     }
 
     /**
@@ -46,6 +50,7 @@ class WineController extends Controller
     public function store(Request $request)
     {
         //
+        //dd ($request);
         try {
             $wine = Wine::create ([
                  'name' => $request->name,
@@ -54,15 +59,14 @@ class WineController extends Controller
                  'price' => $request->price,
                  'vol' => $request->vol
              ]);
+             $wine->bars()->attach($request->bars);
              $wine->saveOrFail ();
 
         }
         catch(Exception $e) {
+            //dd($e);
             return redirect()->route('wine.index')->with ('code', 240)->with ('message', 'El vino NO se ha podido guardar');
         }
-
-
-        
         return redirect()->route('wine.index')->with ('code', 0)->with ('message', 'El vino se ha guardado correctamente');
     }
 
@@ -72,8 +76,26 @@ class WineController extends Controller
     public function show(Wine $wine)
     {
         //
-        
-        return view ('wines.show', compact('wine'));
+        try {
+            $host = 'api.frankfurter.app';
+            $operation = 'latest';
+            $endpoint = "https://$host/$operation";
+            //dd($wine);
+            $response = Http::get ($endpoint, [
+                    'to' => 'USD,GBP,CHF,JPY,NOK',
+                    'amount' => $wine['price']
+                ]);
+            $json = $response->json();
+            $rates = $json['rates'];
+
+            
+            
+        }
+        catch (Exception $e) {
+            // codigo en caso de error
+            return view ('wines.show', compact('wine'));
+        }
+        return view ('wines.show', compact('wine', 'rates'));
     }
 
     /**
@@ -82,7 +104,8 @@ class WineController extends Controller
     public function edit(Wine $wine)
     {
         //
-        return view ('wines.edit', compact('wine'));
+        $bars = Bar::orderBy ('name')->get();
+        return view ('wines.edit', compact('wine', 'bars'));
     }
 
     /**
@@ -97,7 +120,9 @@ class WineController extends Controller
             $wine->winery = $request->winery;
             $wine->price = $request->price;
             $wine->vol = $request->vol;
-        
+            
+            $wine->bars()->sync($request->bars);
+
             $wine->saveOrFail();
         }
         catch(Exception $e) {
@@ -115,6 +140,7 @@ class WineController extends Controller
     {
         //
         try {
+             $wine->bars()->detach();
              $wine->deleteOrFail();
         }
         catch(Exception $e) {

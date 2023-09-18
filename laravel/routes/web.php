@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\BarController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WineController;
 /*
 |--------------------------------------------------------------------------
@@ -16,42 +17,49 @@ use App\Http\Controllers\WineController;
 |
 */
 
-Route::get('/', function () {
-    return view ('home');
-
-})->name('index');
+Route::get('/', [HomeController::class, 'index'])->name('index');
 
 // la ruta Home la crea Fortify y aplica el middleware de Auth
 Route::get('/home', function () {
     return redirect()->route('index');
 }
 )->name('home');
-/*
-Route::get('/estoesuncambiodeultimahora', function () {
-    return view ('prueba');
+
+Route::get('/livewire', function () {
+    $count = session ('counter', 0);
+    return view ('prueba', compact('count'));
 })->name('paginadepruebas');
 
+Route::post('/livewire', function () {
+    $count = session ('counter', 0);
+    $count++;
+    session(['counter' => $count]);
+
+    return view ('prueba', compact('count'));
+})->name('paginadepruebas');
+/*
 Route::get('/fadfadfasdfasfdsad/{numero}/{name}', function ($name = 'David', $numero = 2023) {
 
     return view ('home', ["nombre" => $name, "numero" => $numero]);
 })->name('inicio');
 */
 
-Route::get ('/bar/listado', [ BarController::class, 'index' ])->name('bars.index');
+Route::get ('/bars/listado', [ BarController::class, 'index' ])->name('bars.index');
 
 Route::group(['middleware' => 'auth'], function () {
-        Route::get('/bar/create', [BarController::class, 'create'])->name('bars.create');
-        Route::post('/bar/store', [BarController::class, 'store'])->name('bars.store');
+        Route::get('/bars/create', [BarController::class, 'create'])->name('bars.create');
+        Route::post('/bars/store', [BarController::class, 'store'])->name('bars.store');
 
-        Route::get('/bar/edit/{bar}', [BarController::class, 'edit'])->name('bars.edit');
-        Route::post('/bar/update/{bar}', [BarController::class, 'update'])->name('bars.update');
+        Route::get('/bars/edit/{bar}', [BarController::class, 'edit'])->name('bars.edit');
+        Route::post('/bars/update/{bar}', [BarController::class, 'update'])->name('bars.update');
 
-        Route::post('/bar/delete/{bar}', [BarController::class, 'delete'])->name('bars.delete');
+        Route::post('/bars/delete/{bar}', [BarController::class, 'delete'])->name('bars.delete');
     });
 
-Route::get ('/bar/proposals/{user}', [BarController::class, 'proposals'])->name ('bars.proposals');
+Route::get ('/bars/proposals/{user}', [BarController::class, 'proposals'])->name ('bars.proposals');
     
-Route::get ('/bar/{bar}', [BarController::class, 'show'])->name('bars.show');
+Route::get ('/bars/{bar}', [BarController::class, 'show'])->name('bars.show');
+Route::get ('/bar/{name}', [BarController::class, 'friendly'])->name('bars.friendly');
 
 Route::resource('/wine', WineController::class)->parameters(['wines']);
 

@@ -14,4 +14,12 @@ class Bar extends Model
     public function user () {
         return $this->belongsTo(User::class);
     }
+
+    public function wines () {
+        return $this->belongsToMany(Wine::class, 'bar_wine');
+    }
+    
+    public function images () {
+        return $this->hasMany(Image::class);
+    }
 }

@@ -4,7 +4,7 @@
 
 @section ('content')
 
-<h1>Nuevo vino</h1>
+<h1>Modificar vino</h1>
 
 
 
@@ -26,6 +26,23 @@
                 <label for="description" class="form-label">Descripción</label>
                 <textarea name="description" id="description" class="form-control" >{{ $wine->description}}</textarea>
               </div>
+            <div class="mb-3 d-flex row">
+                <label for="description" class="form-label">Bares que lo sirven</label>
+                @foreach ($bars as $bar)
+                <div class="form-check col-md-4 ps-2">
+                <div class="ps-4">
+                  <input class="form-check-input" type="checkbox" value="{{ $bar->id }}" id="bar_{{ $bar->id }}" name="bars[]"
+                  {{ (($wine->bars->find ($bar->id)) ? 'checked' : '')}}
+                  >
+                  <label class="form-check-label" for="bar_{{ $bar->id }}">
+                     {{ $bar->name }} 
+                      </label>
+                  </div>
+                </div>
+                @endforeach  
+              
+              </div>
+  
             <div class="mb-3">
               <label for="winery" class="form-label">Bodega del vino</label>
               <input type="text" class="form-control" id="winery" name="winery" value="{{ $wine->winery}}">

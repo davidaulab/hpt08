@@ -3,6 +3,14 @@
 @section ('title', 'Listado de bares')
 
 @section('content')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
 
         @if (isset ($user) && (Auth::user() !== null) && ($user->id == Auth::user()->id))
         <h1>Mis propuestas</h1>
@@ -16,76 +24,58 @@
 
         <x-flash-message code="{{ Session::get ('code') }}" message="{{ Session::get ('message') }}"/>
 
-        <div  class="row">
-        @foreach ($bares as $key => $bar)
-        <div class="col-4 py-2 d-flex align-items-stretch" >
-          <div class="card w-100" >
-            @if (isset($bar->image) && ($bar->image != ''))
-            <img src="{{ $bar->image}}" class="card-img-top" alt="{{ $bar->name }}">
-            @else
-            <img src="{{ asset('img/logo.png')}}" class="card-img-top" alt="{{ $bar->name }}">
-            @endif
+        
+  <livewire:search />
+  <script>
+document.addEventListener ('DOMContentLoaded', () => {
+    console.log('hola');
+    Livewire.hook ('morph.updated', ( {component}) => {
+      console.log ('Component updated');
+      //elimino marcadores del mapa
+      map.eachLayer (function (layer) {
+          if (layer && (typeof layer === 'object' && (layer instanceof L.Marker))) {
+              layer.remove();
+          }
+      } );
 
-            <div class="card-body">
+      // crear los nuevos
+      let names = document.getElementsByName ('name');
+      let lats = document.getElementsByName ('lat');
+      let longs = document.getElementsByName ('long');
 
-              <h5 class="card-title">{{ $bar->name }}</h5>
-              @isset($bar->user)
-              <h6 class="card-text" style="font-size: 0.7em">Propuesta de: 
-              <a href="{{ route('bars.proposals', $bar->user) }}">{{ $bar->user->name}}</a></h6>
-              @endisset
-              <p class="card-text">{{ $bar->description}}
+      let i = 0;
+      console.dir (names);
+      while ( (i < names.length) && (i < lats.length) && (i < longs.length)) {
+          L.marker([lats[i].value, longs[i].value]).addTo(map)
+              //.bindPopup(names[i].value)
+              //.openPopup();
+          i++;    
+      }
+      
+    });
+});
+var map = L.map('map').setView([40.4073813,-3.6993874], 5);
 
-            </p>
-              <a href="{{ route ('bars.show', $bar->id ) }}" class="btn btn-primary">Ver</a>
-            </div>
-          </div>
-        </div>
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    let num = 0;
+    let miIntervalo = setInterval ( ponerBar, 100);
 
-        @if (($key % 3) == 2)
-    </div>
-    <div  class="row">
-        @endif
-        @endforeach
-        </div>
-
-
-
-
-        <div class="d-flex justify-content-center p-4">
-
-        @auth
-        <a href="{{ route ('bars.create')}}" class="btn btn-primary">Nuevo bar</a>
-        @else
-            <p>Solamente los usuarios registrados pueden crear nuevos bares<br>
-            <a href="{{ route('register') }}">Date de alta ahora</a>
-            </p>
-        @endauth
-        </div>
-
- 
-@if (method_exists ($bares, 'getPageName'))
-<div class="d-flex justify-content-center">
-   <ul class="pagination">
-      <li class="page-item">
-          <a class="page-link" href="{{ '?' . $bares->getPageName () . '=1' }}" rel="prev" aria-label="« Inicio">‹</a>
-      </li>  
+    function ponerBar () {
+        if (num < bares.length) {
+          L.marker([bares[num][1], bares[num][2]]).addTo(map)
+              .bindPopup(bares[num][0])
+              .openPopup();
+          num++; 
+        }
+        else {
+          clearInterval (miIntervalo);
+        }
+   
+    }
 
 
-@for ($i = 1; $i <= $bares->lastPage () ; $i++)
-   @if ($i == $bares->currentPage())
-   <li class="page-item active" aria-current="page">
-          <span class="page-link">{{ $i}}</span>
-    </li>
-   @else 
-   <li class="page-item">
-          <a class="page-link" href="{{  '?' . $bares->getPageName () . '=' . $i}}">{{ $i }}</a> 
-   </li> 
-   @endif
-@endfor
-<li class="page-item">
-<a class="page-link" href="{{ '?' . $bares->getPageName () . '=' . $bares->lastPage () }}"rel="next" aria-label="Ultimo">›</a>
-</li>
-</ul>
-</div>
-@endif
+</script>
+
 @endsection
